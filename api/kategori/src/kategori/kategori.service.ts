@@ -10,6 +10,7 @@ import { CreateKategoriDto } from './dto/create-kategori.dto';
 import { UpdateKategoriDto } from './dto/update-kategori.dto';
 import { PrismaService } from 'src/prisma.service';
 import { metadata } from 'reflect-metadata/no-conflict';
+import { notExistKategori } from 'src/common/utils/not-exist-kategori.util';
 
 @Injectable()
 export class KategoriService {
@@ -93,21 +94,9 @@ export class KategoriService {
   // buat fungsi untk detail data
   async findOne(id: number) {
     try {
-      //tampilkan data kategori sesuai id
-      const data = await this.prisma.kategori.findUnique({
-        where: { id: id },
-      });
+      // panggil fungsi notExistKategori
+      const data = await notExistKategori(id, this.prisma);
 
-      //jika data kategori tidak ditemukan
-      if (!data) {
-        throw new NotFoundException({
-          success: false,
-          message: process.env.NOT_DATA,
-          metadata: {
-            status: HttpStatus.NOT_FOUND,
-          },
-        });
-      }
       //jika data kategori ditemukan
       return {
         success: true,
@@ -135,21 +124,8 @@ export class KategoriService {
   //buat fungsi untuk ubah data
   async update(id: number, updateKategoriDto: UpdateKategoriDto) {
     try {
-      //tampilkan data kategori sesuai id
-      const data = await this.prisma.kategori.findUnique({
-        where: { id: id },
-      });
-
-      //jika data kategori tidak ditemukan
-      if (!data) {
-        throw new NotFoundException({
-          success: false,
-          message: process.env.NOT_DATA,
-          metadata: {
-            status: HttpStatus.NOT_FOUND,
-          },
-        });
-      }
+      // panggil fungsi notExistKategori
+      await notExistKategori(id, this.prisma);
 
       //buat variabel untuk filter nama
       // ?? (nullish operator)
@@ -222,21 +198,8 @@ export class KategoriService {
   //buat fungsi hapus adata
   async remove(id: number) {
     try {
-      //tampilkan data kategori sesuai id
-      const data = await this.prisma.kategori.findUnique({
-        where: { id: id },
-      });
-
-      //jika data kategori tidak ditemukan
-      if (!data) {
-        throw new NotFoundException({
-          success: false,
-          message: process.env.NOT_DATA,
-          metadata: {
-            status: HttpStatus.NOT_FOUND,
-          },
-        });
-      }
+      // panggil fungsi notExistKategori
+      await notExistKategori(id, this.prisma);
 
       await this.prisma.kategori.delete({
         where: { id: id },
