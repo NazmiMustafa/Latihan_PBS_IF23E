@@ -9,8 +9,8 @@ import {
 import { CreateKategoriDto } from './dto/create-kategori.dto';
 import { UpdateKategoriDto } from './dto/update-kategori.dto';
 import { PrismaService } from 'src/prisma.service';
-import { metadata } from 'reflect-metadata/no-conflict';
 import { notExistKategori } from 'src/common/utils/not-exist-kategori.util';
+import { conflictKategori } from 'src/common/utils/conflict-kategori.util';
 
 @Injectable()
 export class KategoriService {
@@ -21,29 +21,14 @@ export class KategoriService {
   async create(CreateKategoriDto: CreateKategoriDto) {
     //return 'This action adds a new kategori';
 
-    //buat variabel untuk filter nama
-    const nama_filter = CreateKategoriDto.nama
-      .trim()
-      .replace(/\s/g, '')
-      .toUpperCase();
+    //panggil fungsi conflictkategori
+    const nama_filter = await conflictKategori(
+      CreateKategoriDto.nama,
+      process.env.FAILED_SAVE!,
+      this.prisma,
+      0,
+    );
 
-    //cek apakah data kategori sudah ada/belum
-    const exist = await this.prisma.kategori.findFirst({
-      where: {
-        nama_filter: nama_filter,
-      },
-    });
-
-    //jika data kategori sudah ada
-    if (exist) {
-      throw new ConflictException({
-        success: false,
-        messae: process.env.FAILED_SAVE,
-        metadaataa: {
-          status: HttpStatus.CONFLICT,
-        },
-      });
-    }
     //jika data kategori belum ada
 
     // simpan data kategori
@@ -107,7 +92,7 @@ export class KategoriService {
         data: data,
       };
     } catch (error) {
-      if (error instanceof NotFoundException){
+      if (error instanceof NotFoundException) {
         throw error;
       }
 
@@ -130,30 +115,15 @@ export class KategoriService {
       //buat variabel untuk filter nama
       // ?? (nullish operator)
       // || (or)
-      const nama_filter = (updateKategoriDto.nama ?? '')
-        .trim()
-        .replace(/\s/g, '')
-        .toUpperCase();
 
-      //cek apakah data kategori sudah ada/belum
-      const exist = await this.prisma.kategori.findFirst({
-        where: {
-          NOT: { id: id },
-          nama_filter: nama_filter,
-        },
-      });
+      //panggil fungsi conflictKategori
+      const nama_filter = await conflictKategori(
+        updateKategoriDto.nama ?? '',
+        process.env.FAILDE_UPDATE!,
+        this.prisma,
+        id,
+      );
 
-      //jika data kategori sudah ada
-      if (exist) {
-        throw new ConflictException({
-          success: false,
-          messae: process.env.FAILED_UPDATE,
-          metadaataa: {
-            status: HttpStatus.CONFLICT,
-          },
-        });
-      }
-      
       //Jika data kategori belum ada
       //ubah data kategori berdasarkan id
       await this.prisma.kategori.update({
@@ -180,7 +150,7 @@ export class KategoriService {
       //   throw error;
       // }
 
-      if (error instanceof HttpException){
+      if (error instanceof HttpException) {
         throw error;
       }
 
@@ -214,7 +184,7 @@ export class KategoriService {
         },
       };
     } catch (error) {
-      if (error instanceof NotFoundException){
+      if (error instanceof NotFoundException) {
         throw error;
       }
 
