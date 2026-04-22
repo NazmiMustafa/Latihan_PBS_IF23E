@@ -11,6 +11,7 @@ import { UpdateKategoriDto } from './dto/update-kategori.dto';
 import { PrismaService } from 'src/prisma.service';
 import { notExistKategori } from 'src/common/utils/not-exist-kategori.util';
 import { conflictKategori } from 'src/common/utils/conflict-kategori.util';
+import { badRequestKategori } from 'src/common/utils/bad-request-kategori.util';
 
 @Injectable()
 export class KategoriService {
@@ -95,14 +96,8 @@ export class KategoriService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-
-      throw new BadRequestException({
-        success: false,
-        message: process.env.NUMBER_ONLY,
-        metadata: {
-          status: HttpStatus.BAD_REQUEST,
-        },
-      });
+      //memanggil fungsi badRequestKategori
+      badRequestKategori(process.env.NUMBER_ONLY!);
     }
   }
 
@@ -154,14 +149,8 @@ export class KategoriService {
         throw error;
       }
 
-      // error lain (misal ID bukan angka)
-      throw new BadRequestException({
-        success: false,
-        message: process.env.NUMBER_ONLY,
-        metadata: {
-          status: HttpStatus.BAD_REQUEST,
-        },
-      });
+      //memanggil fungsi badRequestKategori
+      badRequestKategori(process.env.NUMBER_ONLY!);
     }
   }
 
@@ -188,13 +177,8 @@ export class KategoriService {
         throw error;
       }
 
-      throw new BadRequestException({
-        success: false,
-        message: process.env.NUMBER_ONLY,
-        metadata: {
-          status: HttpStatus.BAD_REQUEST,
-        },
-      });
+      //memanggil fungsi badRequestKategori
+      badRequestKategori(process.env.NUMBER_ONLY!);
     }
   }
 }
