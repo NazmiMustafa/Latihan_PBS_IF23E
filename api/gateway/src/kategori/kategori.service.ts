@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { kategori_api } from '../common/kategori.instance';
+import { kategori_api } from '../common/instances/kategori.instance';
 import { CreateKategoriDto } from './dto/create-kategori.dto';
 import { UpdateKategoriDto } from './dto/update-kategori.dto';
 
@@ -11,9 +11,6 @@ export interface Kategori {
 }
 @Injectable()
 export class KategoriService {
-  private readonly base_url = 'http://localhost:3001/api/kategori';
-  // buat variabel untuk endpoint kategori
-
   // fungsi untuk akses
   // endpoint kategori (create)
   async create(createKategoriDto: CreateKategoriDto): Promise<Kategori> {
