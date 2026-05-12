@@ -17,7 +17,7 @@ export class AuthService {
     // tampilkan hasil respon
     return {
       success: true,
-      message: 'Access Token Berhasil Dibuat',
+      message: process.env.ACCESS_TOKEN,
       metadata: {
         status: HttpStatus.CREATED,
       },

@@ -12,7 +12,7 @@ import { JwtStrategy } from './jwt.strategy';
     PassportModule.register({}),
     // cek kesesuian dengan jwt.strategy
     JwtModule.register({
-      secret: 'IF23E',
+      secret: 'IF23E', //ga bisa di bikin konstanta
       signOptions: { expiresIn: '1m' },
     }),
   ],
