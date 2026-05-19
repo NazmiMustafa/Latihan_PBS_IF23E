@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from './dto/auth.dto';
 
@@ -8,24 +8,37 @@ export class AuthService {
 
   // buat fungsi untuk login
   login(dto: AuthDto) {
-    // buat variabel untuk payload
-    const payload = {
-      username: dto.username,
-      password: dto.password,
-    };
+    //jika username dan password terisi
+    if (dto.username == 'admin' && dto.password == 'admin123') {
+      // buat variabel untuk payload
+      const payload = {
+        username: dto.username,
+        password: dto.password,
+      };
 
-    // tampilkan hasil respon
-    return {
-      success: true,
-      message: process.env.ACCESS_TOKEN,
-      metadata: {
-        status: HttpStatus.CREATED,
-      },
-      data: {
-        access_token: this.jwtService.sign(payload),
-        token_type: 'Bearer',
-        expires_in: '1m',
-      },
-    };
+      // tampilkan hasil respon
+      return {
+        success: true,
+        message: process.env.ACCESS_TOKEN,
+        metadata: {
+          status: HttpStatus.CREATED,
+        },
+        data: {
+          access_token: this.jwtService.sign(payload),
+          token_type: 'Bearer',
+          expires_in: '1m',
+        },
+      };
+    }
+    //jika username dan password salah !
+    else {
+      throw new NotFoundException({
+        success: false,
+        message: 'Usename atau Password Salah',
+        metadata: {
+          status: HttpStatus.NOT_FOUND,
+        },
+      });
+    }
   }
 }
