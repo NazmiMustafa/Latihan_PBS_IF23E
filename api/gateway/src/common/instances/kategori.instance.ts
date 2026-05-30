@@ -1,11 +1,23 @@
 import { HttpException } from '@nestjs/common';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 // buat variabel untuk endpoint kategori
 export const kategori_api = axios.create({
   baseURL: 'http://localhost:3001/api/kategori',
   timeout: 1000,
 });
+
+// buat interceptor untuk request
+kategori_api.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    // sesuaikan nama header dan isi header dengan resource (3001)
+    config.headers['x-internal-secret'] = 'rahasia';
+
+    return config;
+  },
+  (error) =>
+    Promise.reject(error instanceof Error ? error : new Error(String(error))),
+);
 
 // buat interceptor untuk response
 kategori_api.interceptors.response.use(
@@ -20,6 +32,6 @@ kategori_api.interceptors.response.use(
     }
 
     // jika tidak terbaca status error
-    throw new HttpException('Kategori Error', 500);
+    throw new HttpException('Internal Error', 500);
   },
 );

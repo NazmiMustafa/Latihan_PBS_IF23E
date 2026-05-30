@@ -11,10 +11,10 @@ import {
 import { KategoriService } from './kategori.service';
 import { CreateKategoriDto } from './dto/create-kategori.dto';
 import { UpdateKategoriDto } from './dto/update-kategori.dto';
-import { JwtGuard } from 'src/auth/jwt.guard';
+import { JwtAccessGuard } from '../auth/guards/jwt-access.guard';
 
 @Controller('kategori')
-@UseGuards(JwtGuard)
+@UseGuards(JwtAccessGuard)
 export class KategoriController {
   constructor(private readonly kategoriService: KategoriService) {}
 
